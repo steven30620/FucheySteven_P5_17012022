@@ -1,25 +1,19 @@
-
-let meublesData = [];  //tableau vide qui dois récupéré data des meubles
-
-const fetchMeuble = async() => {  //fonction qui vas récupéré les data et les mettre dans le tableau
-        await fetch("http://localhost:3000/api/products") //appel de l'url pour récupéré les produits, tant que les data pas récupéré, ne passe pas dans le then
-        .then((result) => result.json())  //res correspond au resultat de l'appel de l'url. (les data meuble en json, donc converti en js)
-        .then((parsedResult) => {  // promise vas prendre le resultat de res.json 
-            meublesData = parsedResult //parsedResult contiens mes objets js et sont rentré dans le array 
-            console.log(meublesData);
-        })
+const getProducts = async() => {   //fonction qui vas récupéré les info à partir de l'api 
+    let dataProducts = await fetch("http://localhost:3000/api/products") 
+       return await dataProducts.json()   // réponse des donné seulement après les avoir récupéré
 }
 
-fetchMeuble()
-.then(()=> {
-    let htmlCard = '';
 
-    let cards = document.getElementById("items")
-    for(meuble of meublesData){
-        htmlCard += '<a href="./product.html?id='+meuble._id+'"><article><img src="'+meuble.imageUrl+'" alt="'+meuble.altTxt+'"><h3 class="productName">'+meuble.name+'</h3><p class="productDescription">'+meuble.description+'</p></article></a>'
+let displayProducts  = async ()=> {    // fonction qui vas afficher les produits 
+    let dataProducts = await getProducts()    // on donnes les info à la variable dataProducts
+    let htmlCard = '';  
+    let cards = document.getElementById("items")   //récupération de la div avec l'id items en vue d'y ajouter le html pour chaque produits
+    
+    for(product of dataProducts){ 
+        htmlCard += '<a href="./product.html?id='+product._id+'"><article><img src="'+product.imageUrl+'" alt="'+product.altTxt+'"><h3 class="productName">'+product.name+'</h3><p class="productDescription">'+product.description+'</p></article></a>'
     }
     
-    cards.innerHTML = htmlCard;
-})
+    cards.innerHTML = htmlCard;  //ajout du html correspondant au cartes, pour chaque élément du tableau dataProducts 
+}
 
-
+displayProducts()  //affichage des produits
