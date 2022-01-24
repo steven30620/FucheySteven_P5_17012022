@@ -43,16 +43,27 @@ let displayProduct = async() =>{    // fonction qui vas afficher les info par ra
 
 displayProduct() //affichage des info du produit séléctionné 
 
-const sendDataToCart =() =>{
+const sendDataToCart =() =>{     //envoie des donnée de la page dans le local storage
 
-    let addToCart = document.getElementById('addToCart')
-    let chooseProduct = idProduct
-    addToCart.addEventListener('click',function(sendDataToLocal){
-        sendDataToLocal =  localStorage.setItem('produit séléctionné',chooseProduct)
-    }
-    )
+    let addToCart = document.getElementById('addToCart')  
+    let cart = []   
+    let quantity = document.getElementById("quantity")
+    let color = document.getElementById("colors")
+
+    addToCart.addEventListener('click',function(e){
+        let productDetail = {
+            id: idProduct,
+            color: color.value,
+            quantity: quantity.value
+        }
+        cart.push(productDetail) 
+        localStorage.setItem("productArray", JSON.stringify(cart))
+}
+)
+
 }
 
 sendDataToCart()
+
 
 
