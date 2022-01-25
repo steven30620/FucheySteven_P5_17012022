@@ -6,52 +6,74 @@ const cartHtml = document.getElementById("cart__items")
 const getProductInfo = async(idProduct) =>{
     let productInfoRes =await fetch("http://localhost:3000/api/products/"+idProduct) 
     return await productInfoRes.json()
+}
 
-    }
-
-
+let totalPrice = 0
+let totalQuantity = 0
 
 async function displayProduct(){
+
+    for(product of cart){      
+        let dataProduct = await getProductInfo(product.id)
+
+        cartHtml.innerHTML += `<article class="cart__item" data-id="${product.id}" data-color="${product.color}">
+        <div class="cart__item__img">
+        <img src="${dataProduct.imageUrl}">
+        </div>
+        <div class="cart__item__content">
+        <div class="cart__item__content__description">
+            <h2>${dataProduct.name}</h2>
+            <p>${product.color}</p>
+            <p>${dataProduct.price}€</p>
+        </div>
+        <div class="cart__item__content__settings">
+            <div class="cart__item__content__settings__quantity">
+                <p>Qté : </p>
+                <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${product.quantity}">
+            </div>
+            <div class="cart__item__content__settings__delete">
+                <p class="deleteItem">Supprimer</p>
+            </div>
+        </div>
+        </div>
+        </article>`
+
+
+        totalPrice += dataProduct.price * product.quantity
+        totalQuantity += product.quantity 
     
-    for(let product of cart){
-
-    let dataProduct = await getProductInfo(product.id)
-
-    cartHtml.innerHTML += `<article class="cart__item" data-id="${product.id}" data-color="${product.color}">
-    <div class="cart__item__img">
-      <img src="${dataProduct.imageUrl}">
-    </div>
-    <div class="cart__item__content">
-      <div class="cart__item__content__description">
-        <h2>${dataProduct.name}</h2>
-        <p>${product.color}</p>
-        <p>${dataProduct.price}€</p>
-      </div>
-      <div class="cart__item__content__settings">
-        <div class="cart__item__content__settings__quantity">
-          <p>Qté : </p>
-          <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${product.quantity}">
-        </div>
-        <div class="cart__item__content__settings__delete">
-          <p class="deleteItem">Supprimer</p>
-        </div>
-      </div>
-    </div>
-    </article>`
-}
+    }
+    detectChange()
+    displayTotal()
 }
 
 displayProduct()
 
-// function removeProduct() {
+let displayTotal = async() =>{
 
-//     let removeButton = document.getElementsByClassName("deletItem")
+        let dataProduct = await getProductInfo(product.id)
+        totalPrice = dataProduct.price * product.quantity
+        totalQuantity = product.quantity
 
-//     removeButton.addEventListener('click', function (e) {
-//         cartHtml.remove()
-//     }
-//     )
+        let displayPrice = document.getElementById('totalPrice')
+            displayPrice.innerHTML = totalPrice
 
-// }
+        let displayTotalQuantity = document.getElementById('totalQuantity')
+            displayTotalQuantity.innerHTML = parseInt(totalQuantity,)   // affiche le nombre total d'article et enlève le 0devant le nombre
 
-// removeProduct()
+    }
+
+function detectChange() {
+    let detectChange = document.querySelectorAll('.itemQuantity') 
+    detectChange.forEach(function(selector){
+        selector.addEventListener('change',async function(e){
+            let id = document.querySelector('article').dataset.id
+            cart.find((product) =>product.id === id )
+            product.quantity = Number(e.target.value)
+            console.log(JSON.stringify(cart));
+            localStorage.setItem("productArray", JSON.stringify(cart))  
+            displayTotal()          
+        })
+    })
+    
+}

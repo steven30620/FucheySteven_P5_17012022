@@ -43,27 +43,42 @@ let displayProduct = async() =>{    // fonction qui vas afficher les info par ra
 
 displayProduct() //affichage des info du produit séléctionné 
 
+
 const sendDataToCart =() =>{     //envoie des donnée de la page dans le local storage
 
-    let addToCart = document.getElementById('addToCart')  
-    let cart = []   
-    let quantity = document.getElementById("quantity")
+    let addToCart = document.getElementById('addToCart')   //récupere les donnée dans la balise avec l'id addtocart
+    let quantity = document.getElementById("quantity")  
     let color = document.getElementById("colors")
+    let cart = []           //création du tableau qui sera la panier du client                        
+    
+    if(localStorage.getItem("productArray") !== null){   //on check si des données ne sont pas déjà stocké dans le local storage pour les récupéré si c'est le cas
+     cart = JSON.parse(localStorage.getItem("productArray")) //convertion du JSON en JS pour pouvoir traiter les donnée
+    }
 
-    addToCart.addEventListener('click',function(e){
-        let productDetail = {
+    addToCart.addEventListener('click',function(e){  //détection du click du client
+        let productDetail = {   //envoie des donnée correspondant a la séléction du client dans le tableau Cart
             id: idProduct,
             color: color.value,
             quantity: quantity.value
         }
-        cart.push(productDetail) 
-        localStorage.setItem("productArray", JSON.stringify(cart))
+        
+        let productAlreadyInCart = cart.find((product) =>product.id === idProduct && product.color ===  color.value )  //vérifie dans le tableau si un Id semblable est déjà stocké
+        
+
+        if(productAlreadyInCart){  // ajout de la quantité au lieu de la création d'un nouvelle objet dans le tableau cart
+
+            let totalQuantity =  Number(productAlreadyInCart.quantity) + Number(quantity.value)
+            productAlreadyInCart.quantity = totalQuantity
+            localStorage.setItem("productArray", JSON.stringify(cart))
+        }
+    
+    else{   console.log("ça bloc pas");
+        cart.push(productDetail)
+        localStorage.setItem("productArray", JSON.stringify(cart)) //convertion des donné du JS en JSON
+    }
 }
 )
-
+    
 }
 
-sendDataToCart()
-
-
-
+sendDataToCart() 
