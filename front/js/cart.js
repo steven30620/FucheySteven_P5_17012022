@@ -149,25 +149,26 @@ if (urlPage.pathname == "/front/html/cart.html") {
 		//fonction permettant de vérifier les input dans le formulaire
 		let letterWithSpace = /^[a-zA-Z\s]{2,25}$/; //autorise toute les lettre et le tiret
 		let LetterAndNumber = /^[\w]{1,}/;
-		let minimumForEmail = /[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+/;
-		let specialCharacter = /[^a-zA-Z0-9-_\s]/;
+		let minimumForEmail = /[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]/; //oblige d'avoir un @ suivie d'un point pour l'adresse mail
+		let specialCharacter = /[^a-zA-Z0-9-_\s]/; //tout ce qui n'es pas des chiffre des lettre  ou espace et - _
 
-		let detectChangeFirstName = document.getElementById("firstName");
+		let detectChangeFirstName = document.getElementById("firstName"); // detecte tout les champs du formulaire
 		let detectChangeLastName = document.getElementById("lastName");
 		let detectChangeAddress = document.getElementById("address");
 		let detectChangeCity = document.getElementById("city");
 		let detectChangeEmail = document.getElementById("email");
 
 		detectChangeFirstName.addEventListener("input", function (e) {
+			let err = document.getElementById("firstNameErrorMsg");
+			// detection à chaque input de la validité du champs du formulaire
 			if (detectChangeFirstName.value.match(letterWithSpace)) {
-				let err = document.getElementById("firstNameErrorMsg");
+				//permet d'ajouter ou supprimer la ligne d'erreur
 				if (err != null) {
 					err.innerHTML = " ";
-					detectChangeFirstName.setCustomValidity("");
+					detectChangeFirstName.setCustomValidity(""); //setCustom renvoi la valeur true lorsque le champs est vide
 				}
 				return;
 			} else {
-				let err = document.getElementById("firstNameErrorMsg");
 				err.innerHTML = "Seulement les lettres sont autorisés";
 				detectChangeFirstName.setCustomValidity(
 					"Seulement les lettres sont autorisés"
@@ -176,15 +177,14 @@ if (urlPage.pathname == "/front/html/cart.html") {
 		});
 
 		detectChangeLastName.addEventListener("input", function (e) {
+			let err = document.getElementById("lastNameErrorMsg");
 			if (detectChangeLastName.value.match(letterWithSpace)) {
-				let err = document.getElementById("lastNameErrorMsg");
 				if (err != null) {
 					err.innerHTML = " ";
 					detectChangeLastName.setCustomValidity("");
 				}
 				return;
 			} else {
-				let err = document.getElementById("lastNameErrorMsg");
 				err.innerHTML = "Seulement les lettres sont autorisés";
 				detectChangeLastName.setCustomValidity(
 					"Seulement les lettres sont autorisés"
@@ -204,15 +204,14 @@ if (urlPage.pathname == "/front/html/cart.html") {
 		});
 
 		detectChangeCity.addEventListener("input", function (e) {
+			let err = document.getElementById("cityErrorMsg");
 			if (detectChangeCity.value.match(letterWithSpace)) {
-				let err = document.getElementById("cityErrorMsg");
 				if (err != null) {
 					err.innerHTML = " ";
 					detectChangeCity.setCustomValidity("");
 				}
 				return;
 			} else {
-				let err = document.getElementById("cityErrorMsg");
 				err.innerHTML = "Seulement les lettres sont autorisés";
 				detectChangeCity.setCustomValidity(
 					"Seulement les lettres sont autorisés"
@@ -221,69 +220,61 @@ if (urlPage.pathname == "/front/html/cart.html") {
 		});
 
 		detectChangeEmail.addEventListener("input", function (e) {
-			if (
-				detectChangeEmail.value.match(minimumForEmail) &&
-				detectChangeEmail.value.match(LetterAndNumber)
-			) {
-				if (detectChangeEmail.value.match(letterWithSpace)) {
-					let err = document.getElementById("emailErrorMsg");
-					err.innerHTML = "Email invalide";
-					detectChangeEmail.setCustomValidity("Email invalide");
-				} else if (detectChangeEmail.value.match(specialCharacter)) {
-					let err = document.getElementById("emailErrorMsg");
-					err.innerHTML = "Email invalide";
-					detectChangeEmail.setCustomValidity("Email invalide");
-				}
-				let err = document.getElementById("emailErrorMsg");
+			let err = document.getElementById("emailErrorMsg");
+			if (detectChangeEmail.value.match(minimumForEmail)) {
 				err.innerHTML = " ";
 				detectChangeEmail.setCustomValidity("");
 			} else {
-				let err = document.getElementById("emailErrorMsg");
 				err.innerHTML = "Adresse invalide";
 				detectChangeEmail.setCustomValidity("Email invalide");
 			}
 		});
 	}
+
 	verifForm();
 
 	async function getDataForOrder() {
-		let detectClickOnOrder = document.getElementById("order");
+		//fonction qui permet de récupéré les information entré par l'utilisateur dans le but de les vérifié et les envoyé a l'api
+		let detectClickOnOrder = document.getElementById("order"); //détéction du clic sur le bouton commandé
 		let dataForm = document.querySelectorAll(
-			"form .cart__order__form__question input"
+			"form .cart__order__form__question input" //selection de toutes les class correspondante dans form
 		);
-		let productIdInCart = cart.map((product) => product.id);
-		let contact = {};
+		let productIdInCart = cart.map((product) => product.id); // on parcour chaque objet du panier pour en récupérer l'id
+		let contact = {}; //objet qui prendras les info du formulaire
 
 		detectClickOnOrder.addEventListener("click", async function (e) {
-			e.preventDefault();
+			//événement qui suis le click
+			e.preventDefault(); // block le comportement pas défaut du boutton
 
-			let isValid = true;
+			let isValid = true; // variable qui sert a vérifié les checkvalidity
 
 			dataForm.forEach(function (data) {
+				// pour chaque element du formulaire, on regarde si le champs est vide, ou si la validité est false
 				if (!data.value || !data.checkValidity()) {
-					isValid = false;
-					console.log("nooo");
+					isValid = false; // si c'est false on ne peut pas soumettre le formulaire
 				} else {
-					let attributId = data.getAttribute("name");
-					contact[attributId] = data.value;
-					console.log(contact);
+					let attributId = data.getAttribute("name"); //si le texte passe la validation, alors on récupère tout les tympe name de la balise form
+					contact[attributId] = data.value; //création des info dans l'objet contact avec pour Index l'id correspondant a chaque ligne du formulaire et leurs valur qui correspond
 				}
 			});
 
 			if (isValid) {
+				// les champs correctement remplis  alors on appel la fonction qui envoie les donné a l'api
 				if (Array.isArray(productIdInCart)) {
-					let order = await postOrder(contact, productIdInCart);
-					window.location =
+					let order = await postOrder(contact, productIdInCart); //attente de la réponse de l'api
+					window.location = // renvoi sur la page confirmation  avec  l'id de la commande dans l'url
 						"/front/html/confirmation.html?idOrder=" +
 						order.orderId;
 				}
 			}
 		});
 	}
-	getDataForOrder();
+	getDataForOrder(); // initialisation de la fonction
 
 	async function postOrder(contact, productIdInCart) {
+		// fonction qui permet d'envoyer les information reçu à l'api
 		let response = await fetch("http://localhost:3000/api/products/order", {
+			//methode POST
 			method: "POST",
 			headers: {
 				Accept: "application/json",
@@ -295,13 +286,14 @@ if (urlPage.pathname == "/front/html/cart.html") {
 			}),
 		});
 
-		return await response.json();
+		return await response.json(); //retourne les information reçu par l'api
 	}
 } else {
-	let confirmation = document.getElementById("orderId");
+	// code qui s'execute seulement sur la page confirmation
+	let confirmation = document.getElementById("orderId"); // récuperation du html où afficher l'id de la commande
 	if (confirmation) {
 		let urlPage = new URL(document.location.href); // récuperation des info de la page web active
-		let idOrder = urlPage.searchParams.get("idOrder");
-		confirmation.innerHTML = idOrder;
+		let idOrder = urlPage.searchParams.get("idOrder"); // récupération de l'id de la commande dans l'url
+		confirmation.innerHTML = idOrder; // affichage de l'id
 	}
 }

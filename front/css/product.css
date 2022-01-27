@@ -62,7 +62,7 @@
 .item__content__settings__color select,
 .item__content__settings__quantity input {
 	color: var(--footer-secondary-color);
-	font-family: 'Montserrat', sans-serif;
+	font-family: "Montserrat", sans-serif;
 	font-size: 14px;
 	border-radius: 20px;
 	border: 1px solid #767676;
@@ -91,10 +91,6 @@
 	box-shadow: rgba(42, 18, 206, 0.9) 0 0 22px 6px;
 }
 
-
-
-
-
 /***************/
 /*Media queries*/
 /***************/
@@ -114,7 +110,7 @@
 	}
 }
 
-@media (max-width: 575.98px) { 
+@media (max-width: 575.98px) {
 	.item article {
 		width: 90%;
 	}

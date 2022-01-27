@@ -53,7 +53,6 @@ exports.getOneProduct = (req, res, next) => {
  *
  */
 exports.orderProducts = (req, res, next) => {
-	return res.status(200).send("dsoifh");
 	if (
 		!req.body.contact ||
 		!req.body.contact.firstName ||
@@ -63,7 +62,7 @@ exports.orderProducts = (req, res, next) => {
 		!req.body.contact.email ||
 		!req.body.products
 	) {
-		return res.status(400).send(new Error("qsfijqsd!"));
+		return res.status(400).send(new Error("Bad request!"));
 	}
 	let queries = [];
 	for (let productId of req.body.products) {
