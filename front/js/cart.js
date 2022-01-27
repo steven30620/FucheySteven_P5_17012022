@@ -23,8 +23,6 @@ if (urlPage.pathname == "/front/html/cart.html") {
 	let firstTotalPrice = 0; //déclaration de variable en vue du calcul des prix et quantité
 	let totalQuantity = 0;
 	let firstSumQuantity = 0;
-	let sumPrice = 0;
-	let quantityProductChanged = 0;
 
 	async function displayProduct() {
 		//fonction qui vas crée pour chaque produit une ligne dans le panier
