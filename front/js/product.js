@@ -42,7 +42,7 @@ let displayProduct = async () => {
 
 		htmlColor += '<option value="' + color + '">' + color + "</option>";
 	}
-	colorsChoice.innerHTML = htmlColor; // ajout du code html dans le menu déroulant
+	colorsChoice.innerHTML = htmlColor; // ajout du code html dans le menu déroulant.
 };
 
 displayProduct(); //affichage des info du produit séléctionné
