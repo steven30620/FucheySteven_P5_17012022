@@ -82,7 +82,6 @@ const sendDataToCart = () => {
 			productAlreadyInCart.quantity = totalQuantity;
 			localStorage.setItem("productArray", JSON.stringify(cart));
 		} else {
-			console.log("ça bloc pas");
 			cart.push(productDetail);
 			localStorage.setItem("productArray", JSON.stringify(cart)); //convertion des donné du JS en JSON
 		}
